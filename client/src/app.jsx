@@ -120,6 +120,20 @@ class App extends React.Component {
           statesWithNoDeaths.push(item.state);
         }
       });
+
+      const amountOfStatesPie = c3.generate({
+        bindto: "#states-affected",
+        data: {
+          columns: [
+            ["States with a death count of 1 or more", amountAffected],
+            ["States with no death cases", totalStates - amountAffected]
+          ],
+          type: "pie",
+          onclick: function(d, i) {
+            console.log("onclick", d, i);
+          }
+        }
+      });
     } else {
       return <div>No pie chart</div>;
     }
@@ -134,6 +148,7 @@ class App extends React.Component {
         <h3>Number of cases that led to death per state</h3>
         <div id="deaths"></div>
         {this.renderChart()}
+        <div id="states-affected"></div>
         {this.renderPercentStatesWithDeaths()}
       </div>
     );
