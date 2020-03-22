@@ -7,7 +7,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      statesData: null
+      statesData: null,
+      dailyData_US: null
     };
   }
 
@@ -15,10 +16,28 @@ class App extends React.Component {
     axios
       .get("https://covidtracking.com/api/states")
       .then(result => {
-        this.setState({ statesData: result.data }),
-          () => {
-            console.log(this.state);
-          };
+        result.data = result.data.sort(
+          (a, b) => parseFloat(b.positive) - parseFloat(a.positive)
+        );
+        this.setState({ statesData: result.data }, () => {
+          console.log(this.state);
+        });
+      })
+      .catch(err => {
+        if (err) {
+          throw err;
+        }
+      });
+
+    axios
+      .get("https://covidtracking.com/api/us/daily")
+      .then(result => {
+        result.data = result.data.sort(
+          (a, b) => parseFloat(a.date) - parseFloat(b.date)
+        );
+        this.setState({ dailyData_US: result.data }, () => {
+          console.log(this.state.dailyData_US);
+        });
       })
       .catch(err => {
         if (err) {
@@ -27,7 +46,7 @@ class App extends React.Component {
       });
   }
 
-  renderChart() {
+  renderStateChart() {
     if (this.state.statesData !== null) {
       const statesData = ["States"];
       const positivesData = ["positives"];
@@ -99,8 +118,6 @@ class App extends React.Component {
           height: 400
         }
       });
-    } else {
-      return <div>None here</div>;
     }
   }
 
@@ -122,7 +139,7 @@ class App extends React.Component {
 
       const amountOfStatesPie = c3.generate({
         bindto: "#states-affected",
-        color: { pattern: ["#DD46FF", "#18F895"] },
+        color: { pattern: ["#216932", "#55398B"] },
         data: {
           columns: [
             ["States with a death count of 1 or more", amountAffected],
@@ -134,8 +151,45 @@ class App extends React.Component {
           }
         }
       });
-    } else {
-      return <div>No pie chart</div>;
+    }
+  }
+
+  renderDailyUSChart() {
+    if (this.state.dailyData_US !== null) {
+      const dates = ["dates"];
+      const amountOfStatesAffected = ["states"];
+      const testedPositive = ["positive"];
+
+      this.state.dailyData_US.forEach(item => {
+        dates.push(
+          `${item.date
+            .toString()
+            .substring(0, 4)}-${item.date
+            .toString()
+            .substring(4, 6)}-${item.date.toString().substring(6)}`
+        );
+        amountOfStatesAffected.push(item.states);
+        testedPositive.push(item.positive);
+      });
+
+      let chart = c3.generate({
+        bindto: "#daily-us",
+        data: {
+          x: "dates",
+          columns: [dates, testedPositive]
+        },
+        axis: {
+          x: {
+            type: "timeseries",
+            tick: {
+              format: "%Y-%m-%d"
+            }
+          },
+          y: {
+            min: 0
+          }
+        }
+      });
     }
   }
 
@@ -146,13 +200,16 @@ class App extends React.Component {
         <div id="positives"></div>
         <h3>Number of cases that led to death per state</h3>
         <div id="deaths"></div>
-        {this.renderChart()}
+        {this.renderStateChart()}
         <h3>
           States that have had at least one death vs States that have not had a
           case lead to death
         </h3>
         <div id="states-affected"></div>
         {this.renderPercentStatesWithDeaths()}
+
+        <div id="daily-us"></div>
+        {this.renderDailyUSChart()}
       </div>
     );
   }
