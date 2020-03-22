@@ -15,7 +15,6 @@ class App extends React.Component {
     axios
       .get("https://covidtracking.com/api/states")
       .then(result => {
-        console.log(result);
         this.setState({ statesData: result.data }),
           () => {
             console.log(this.state);
@@ -123,6 +122,7 @@ class App extends React.Component {
 
       const amountOfStatesPie = c3.generate({
         bindto: "#states-affected",
+        color: { pattern: ["#DD46FF", "#18F895"] },
         data: {
           columns: [
             ["States with a death count of 1 or more", amountAffected],
@@ -130,7 +130,7 @@ class App extends React.Component {
           ],
           type: "pie",
           onclick: function(d, i) {
-            console.log("onclick", d, i);
+            console.log("Data object", d);
           }
         }
       });
@@ -142,12 +142,15 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        {/* <div>this work</div> */}
         <h3>Number of cases that tested positive per state</h3>
         <div id="positives"></div>
         <h3>Number of cases that led to death per state</h3>
         <div id="deaths"></div>
         {this.renderChart()}
+        <h3>
+          States that have had at least one death vs States that have not had a
+          case lead to death
+        </h3>
         <div id="states-affected"></div>
         {this.renderPercentStatesWithDeaths()}
       </div>
