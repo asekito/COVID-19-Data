@@ -25,6 +25,9 @@ class DailyPositives_US extends React.Component {
 
     c3.generate({
       bindto: "#daily-us",
+      color: {
+        pattern: ["#FFFFFF", "#FFFFFF"]
+      },
       data: {
         x: "date",
         y: "positive test results",

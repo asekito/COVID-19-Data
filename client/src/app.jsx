@@ -67,19 +67,19 @@ class App extends React.Component {
     return (
       <div>
         <h3>Number of cases that tested positive per state</h3>
-        <div id="positives"></div>
-        {this.chartRenderer()}
+        <div className="chart-display" id="positives"></div>
 
         <h3>Number of cases that led to death per state</h3>
-        <div id="deaths"></div>
+        <div className="chart-display" id="deaths"></div>
         <h3>
           States that have had at least one death vs States that have not had a
           case lead to death
         </h3>
-        <div id="states-affected"></div>
+        <div className="chart-display" id="states-affected"></div>
 
         <h3>Daily cases in America</h3>
-        <div id="daily-us"></div>
+        <div className="chart-display" id="daily-us"></div>
+        {this.chartRenderer()}
       </div>
     );
   }
