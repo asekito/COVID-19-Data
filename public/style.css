@@ -14,9 +14,19 @@ body {
 
 #root {
   margin: 0% 10% 5% 10%;
+  display: block;
+}
+
+#statistics-container {
+  margin: 5% 10% 0% 10%;
   background-color: black;
   padding: 60px;
   border-radius: 15px;
+  box-shadow: 0px 10px 30px 20px #393434;
+}
+
+#nav-bar {
+  float: left;
 }
 
 /* #positives {
