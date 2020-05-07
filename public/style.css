@@ -17,6 +17,10 @@ body {
   display: block;
 }
 
+.chart-display:hover {
+  cursor: none;
+}
+
 #statistics-container {
   margin: 5% 10% 0% 10%;
   background-color: black;
